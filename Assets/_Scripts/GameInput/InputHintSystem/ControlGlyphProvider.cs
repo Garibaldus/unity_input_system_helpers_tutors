@@ -14,6 +14,11 @@ namespace GameInput.InputHintSystem {
             ["rightCtrl"] = "Ctrl",
             ["leftAlt"] = "Alt",
             ["rightAlt"] = "Alt",
+            ["upArrow"] = "up",
+            ["leftArrow"] = "left",
+            ["downArrow"] = "down",
+            ["rightArrow"] = "right",
+            ["delta"] = "mouse",
         };
 
         private static readonly Dictionary<string, string> MouseMap = new() {
@@ -23,15 +28,18 @@ namespace GameInput.InputHintSystem {
         };
 
         private static readonly Dictionary<string, string> GamepadMap = new() {
-            ["buttonSouth"] = "A",
-            ["buttonEast"] = "B",
-            ["buttonWest"] = "X",
-            ["buttonNorth"] = "Y",
+            ["buttonSouth"] = "<A>",
+            ["buttonEast"] = "<B>",
+            ["buttonWest"] = "<X>",
+            ["buttonNorth"] = "<Y>",
 
             ["leftShoulder"] = "LB",
             ["rightShoulder"] = "RB",
             ["leftTrigger"] = "LT",
             ["rightTrigger"] = "RT",
+            
+            ["rightStick"] = "R Stick",
+            ["leftStick"] = "L Stick",
 
             ["start"] = "Start",
             ["select"] = "Select",

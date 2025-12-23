@@ -15,9 +15,6 @@ public sealed class UIInputContext : IInputContext, InputSystem_Actions.IUIActio
     public event Action onClick;
     public event Action onRightClick;
     public event Action onMiddleClick;
-    public event Action<Vector2> onScrollWheel;
-    public event Action onTrackedDevicePosition;
-    public event Action onTrackedDeviceOrientation;
 
     private readonly Dictionary<InputActionId, InputAction> _actionsMap;
     private readonly InputSystem_Actions.UIActions actions;
@@ -34,9 +31,6 @@ public sealed class UIInputContext : IInputContext, InputSystem_Actions.IUIActio
             { InputActionId.Click, actions.Click },
             { InputActionId.RightClick, actions.RightClick },
             { InputActionId.MiddleClick, actions.MiddleClick },
-            { InputActionId.ScrollWheel, actions.ScrollWheel },
-            { InputActionId.TrackedDevicePosition, actions.TrackedDevicePosition },
-            { InputActionId.TrackedDeviceOrientation, actions.TrackedDeviceOrientation },
         };
     }
 
@@ -97,24 +91,6 @@ public sealed class UIInputContext : IInputContext, InputSystem_Actions.IUIActio
     {
         if (!context.performed) return;
         onMiddleClick?.Invoke();
-    }
-
-    public void OnScrollWheel(InputAction.CallbackContext context)
-    {
-        if (!context.performed) return;
-        onScrollWheel?.Invoke(context.ReadValue<Vector2>());
-    }
-
-    public void OnTrackedDevicePosition(InputAction.CallbackContext context)
-    {
-        if (!context.performed) return;
-        onTrackedDevicePosition?.Invoke();
-    }
-
-    public void OnTrackedDeviceOrientation(InputAction.CallbackContext context)
-    {
-        if (!context.performed) return;
-        onTrackedDeviceOrientation?.Invoke();
     }
 
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GameInput.InputHintSystem.Interfaces;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace GameInput.InputHintSystem {
@@ -8,20 +9,16 @@ namespace GameInput.InputHintSystem {
             var result = new List<ResolvedBinding>();
             var bindings = action.bindings;
 
-            for (var i = 0; i < bindings.Count; i++) {
+            for (int i = 0; i < bindings.Count; i++) {
                 var binding = bindings[i];
 
-                // 1. Пропускаем части composite (обрабатываются родителем)
+                // 1️⃣ Пропускаем части composite — их обрабатывает родитель
                 if (binding.isPartOfComposite)
                     continue;
 
-                // 2. Проверка устройства
-                if (!IsBindingForDevice(binding, deviceType))
-                    continue;
-
-                // 3. Composite
+                // 2️⃣ Composite binding
                 if (binding.isComposite) {
-                    var compositeParts = new List<InputBinding>();
+                    var parts = new List<InputBinding>();
 
                     for (int j = i + 1; j < bindings.Count; j++) {
                         var part = bindings[j];
@@ -31,25 +28,35 @@ namespace GameInput.InputHintSystem {
                         if (!IsBindingForDevice(part, deviceType))
                             continue;
 
-                        compositeParts.Add(part);
+                        if (string.IsNullOrEmpty(part.effectivePath))
+                            continue;
+
+                        parts.Add(part);
                     }
 
-                    if (compositeParts.Count > 0)
-                        result.Add(new ResolvedBinding(compositeParts));
-                }
-                else {
-                    // 4. Обычный биндинг
-                    if (string.IsNullOrEmpty(binding.effectivePath))
-                        continue;
+                    // ✔ Если есть хотя бы один валидный part — composite жив
+                    if (parts.Count > 0)
+                        result.Add(new ResolvedBinding(parts));
 
-                    result.Add(new ResolvedBinding(binding));
+                    continue;
                 }
+
+                // 3️⃣ Обычный биндинг
+                if (!IsBindingForDevice(binding, deviceType))
+                    continue;
+
+                if (string.IsNullOrEmpty(binding.effectivePath))
+                    continue;
+
+                result.Add(new ResolvedBinding(binding));
             }
 
             return result;
         }
 
-        private bool IsBindingForDevice(InputBinding binding, InputDeviceType deviceType) {
+        private bool IsBindingForDevice(
+            InputBinding binding,
+            InputDeviceType deviceType) {
             var path = binding.effectivePath;
             if (string.IsNullOrEmpty(path))
                 return false;

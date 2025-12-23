@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.InputSystem;
 
 namespace GameInput.InputHintSystem {
@@ -15,5 +16,9 @@ namespace GameInput.InputHintSystem {
             IsComposite = true;
             Parts = compositeParts;
         }
+
+        // public override string ToString() {
+        //     return Parts.Aggregate(string.Empty, (current, binding) => current + $"'{binding.effectivePath}' ");
+        // }
     }
 }

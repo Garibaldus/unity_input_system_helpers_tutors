@@ -12,16 +12,17 @@ namespace GameInput.InputHintSystem {
         public InputHint Create(IReadOnlyList<ResolvedBinding> bindings, InputDeviceType deviceType) {
             var tokens = new List<HintToken>();
 
-            for (var i = 0; i < bindings.Count; i++) {
+            for (int i = 0; i < bindings.Count; i++) {
                 var binding = bindings[i];
 
+                // 1️⃣ Рендерим ОДИН способ ввода
                 foreach (var part in binding.Parts) {
                     var token = _glyphProvider.GetToken(part.effectivePath, deviceType);
 
                     tokens.Add(token);
                 }
 
-                // разделитель между альтернативами
+                // 2️⃣ Разделитель между альтернативами
                 if (i < bindings.Count - 1)
                     tokens.Add(HintToken.Separator("/"));
             }

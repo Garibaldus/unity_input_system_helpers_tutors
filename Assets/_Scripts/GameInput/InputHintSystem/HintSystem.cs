@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GameInput.InputHintSystem.Interfaces;
+using UnityEngine;
 
 namespace GameInput.InputHintSystem {
     public sealed class HintSystem : IHintSystem, IDisposable {
