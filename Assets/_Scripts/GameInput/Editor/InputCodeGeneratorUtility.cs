@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEditor;
@@ -36,6 +37,7 @@ namespace GameInput.Editor {
 
             try {
                 GenerateEnums(asset);
+                GenerateInputActionIds(asset);
                 GenerateIInputContext();
                 GenerateContexts(asset);
                 GenerateInputService(asset);
@@ -97,6 +99,33 @@ public enum InputDeviceType
             sb.AppendLine("}");
             WriteSafe("Enums/InputContextType.cs", sb.ToString());
         }
+
+        // ======================================================
+        // InputActionId
+        // ======================================================
+        private static void GenerateInputActionIds(InputActionAsset asset) {
+            var actionNames = new HashSet<string>();
+
+            foreach (var map in asset.actionMaps) {
+                foreach (var action in map.actions) {
+                    var safeName = ToSafeIdentifier(action.name);
+                    actionNames.Add(safeName);
+                }
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendLine("// AUTO-GENERATED");
+            sb.AppendLine("public enum InputActionId");
+            sb.AppendLine("{");
+
+            foreach (var name in actionNames)
+                sb.AppendLine($"    {name},");
+
+            sb.AppendLine("}");
+
+            WriteSafe("Enums/InputActionId.cs", sb.ToString());
+        }
+
 
         // ======================================================
         // IInputContext
@@ -199,17 +228,17 @@ public interface IInputContext
             sb.AppendLine("    public InputDeviceType CurrentDevice { get; private set; }");
             sb.AppendLine("    public event Action<InputDeviceType> onDeviceChanged;");
             sb.AppendLine();
-            
+
             foreach (var map in asset.actionMaps)
                 sb.AppendLine($"    public {ToSafeIdentifier(map.name)}InputContext {ToSafeIdentifier(map.name)} {{ get; }}");
-            
+
             sb.AppendLine();
             sb.AppendLine($"    private readonly {inputClass} _input;");
             sb.AppendLine("    private readonly Dictionary<InputContextType, IInputContext> _contexts;");
             sb.AppendLine("    private InputContextType _activeContext = InputContextType.None;");
             sb.AppendLine("    private IDisposable _anyButtonListener;");
             sb.AppendLine();
-            
+
             sb.AppendLine("    public InputService()");
             sb.AppendLine("    {");
             sb.AppendLine($"        _input = new {inputClass}();");

@@ -1315,17 +1315,6 @@
                     "isOR": false
                 }
             ]
-        },
-        {
-            "name": "XR",
-            "bindingGroup": "XR",
-            "devices": [
-                {
-                    "devicePath": "<XRController>",
-                    "isOptional": false,
-                    "isOR": false
-                }
-            ]
         }
     ]
 }
