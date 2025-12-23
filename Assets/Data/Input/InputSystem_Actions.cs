@@ -1101,7 +1101,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Itneract"",
+                    ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""50ac1fd2-15ea-432b-807e-a3e96f066bf6"",
                     ""expectedControlType"": """",
@@ -1279,7 +1279,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Itneract"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1290,7 +1290,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
-                    ""action"": ""Itneract"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1431,7 +1431,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Simple = asset.FindActionMap("Simple", throwIfNotFound: true);
         m_Simple_LeftStick = m_Simple.FindAction("Left Stick", throwIfNotFound: true);
         m_Simple_RightStick = m_Simple.FindAction("Right Stick", throwIfNotFound: true);
-        m_Simple_Itneract = m_Simple.FindAction("Itneract", throwIfNotFound: true);
+        m_Simple_Interact = m_Simple.FindAction("Interact", throwIfNotFound: true);
         m_Simple_Cancel = m_Simple.FindAction("Cancel", throwIfNotFound: true);
         m_Simple_Pan = m_Simple.FindAction("Pan", throwIfNotFound: true);
     }
@@ -1897,7 +1897,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private List<ISimpleActions> m_SimpleActionsCallbackInterfaces = new List<ISimpleActions>();
     private readonly InputAction m_Simple_LeftStick;
     private readonly InputAction m_Simple_RightStick;
-    private readonly InputAction m_Simple_Itneract;
+    private readonly InputAction m_Simple_Interact;
     private readonly InputAction m_Simple_Cancel;
     private readonly InputAction m_Simple_Pan;
     /// <summary>
@@ -1920,9 +1920,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @RightStick => m_Wrapper.m_Simple_RightStick;
         /// <summary>
-        /// Provides access to the underlying input action "Simple/Itneract".
+        /// Provides access to the underlying input action "Simple/Interact".
         /// </summary>
-        public InputAction @Itneract => m_Wrapper.m_Simple_Itneract;
+        public InputAction @Interact => m_Wrapper.m_Simple_Interact;
         /// <summary>
         /// Provides access to the underlying input action "Simple/Cancel".
         /// </summary>
@@ -1963,9 +1963,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @RightStick.started += instance.OnRightStick;
             @RightStick.performed += instance.OnRightStick;
             @RightStick.canceled += instance.OnRightStick;
-            @Itneract.started += instance.OnItneract;
-            @Itneract.performed += instance.OnItneract;
-            @Itneract.canceled += instance.OnItneract;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
             @Cancel.started += instance.OnCancel;
             @Cancel.performed += instance.OnCancel;
             @Cancel.canceled += instance.OnCancel;
@@ -1989,9 +1989,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @RightStick.started -= instance.OnRightStick;
             @RightStick.performed -= instance.OnRightStick;
             @RightStick.canceled -= instance.OnRightStick;
-            @Itneract.started -= instance.OnItneract;
-            @Itneract.performed -= instance.OnItneract;
-            @Itneract.canceled -= instance.OnItneract;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
             @Cancel.started -= instance.OnCancel;
             @Cancel.performed -= instance.OnCancel;
             @Cancel.canceled -= instance.OnCancel;
@@ -2254,12 +2254,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRightStick(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Itneract" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnItneract(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Cancel" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

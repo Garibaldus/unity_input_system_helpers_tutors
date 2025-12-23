@@ -133,11 +133,23 @@ public enum InputDeviceType
         private static void GenerateIInputContext() {
             WriteSafe("IInputContext.cs", @"
 // AUTO-GENERATED
+using UnityEngine.InputSystem;
+
+#if UNITY_EDITOR
+using System.Collections.Generic;
+#endif
+
 public interface IInputContext
 {
     InputContextType ContextType { get; }
     void Enable();
     void Disable();
+
+    InputAction GetAction(InputActionId actionId);
+
+#if UNITY_EDITOR
+    IEnumerable<InputAction> GetAllActions();
+#endif
 }
 ");
         }
@@ -158,12 +170,13 @@ public interface IInputContext
             var sb = new StringBuilder();
             sb.AppendLine("// AUTO-GENERATED");
             sb.AppendLine("using System;");
+            sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using UnityEngine;");
             sb.AppendLine("using UnityEngine.InputSystem;");
             sb.AppendLine();
             sb.AppendLine($"public sealed class {className} : IInputContext, {inputClass}.I{ToSafeIdentifier(map.name)}Actions");
             sb.AppendLine("{");
-
+            
             sb.AppendLine($"    public InputContextType ContextType => InputContextType.{ToSafeIdentifier(map.name)};");
             sb.AppendLine();
 
@@ -176,18 +189,34 @@ public interface IInputContext
             }
 
             sb.AppendLine();
+            sb.AppendLine("    private readonly Dictionary<InputActionId, InputAction> _actionsMap;");
             sb.AppendLine($"    private readonly {inputClass}.{ToSafeIdentifier(map.name)}Actions actions;");
             sb.AppendLine();
-
             sb.AppendLine($"    public {className}({inputClass} input)");
             sb.AppendLine("    {");
             sb.AppendLine($"        actions = input.{ToSafeIdentifier(originalMapName)};");
             sb.AppendLine("        actions.SetCallbacks(this);");
+            
+            sb.AppendLine("        _actionsMap = new Dictionary<InputActionId, InputAction> {");
+            foreach (var action in map.actions) {
+                sb.AppendLine($"            {{ InputActionId.{ToSafeIdentifier(action.name)}, actions.{ToSafeIdentifier(action.name)} }},");
+            }
+            sb.AppendLine("        };");
             sb.AppendLine("    }");
             sb.AppendLine();
-
             sb.AppendLine("    public void Enable() => actions.Enable();");
             sb.AppendLine("    public void Disable() => actions.Disable();");
+            sb.AppendLine();
+            sb.AppendLine("    public InputAction GetAction(InputActionId actionId) {");
+            sb.AppendLine("        _actionsMap.TryGetValue(actionId, out var action);");
+            sb.AppendLine("        return action;");
+            sb.AppendLine("    }");
+            sb.AppendLine();
+            sb.AppendLine("#if UNITY_EDITOR");
+            sb.AppendLine("    public IEnumerable<InputAction> GetAllActions() {");
+            sb.AppendLine("        return actions.Get().actions;");
+            sb.AppendLine("    }");
+            sb.AppendLine("#endif");
             sb.AppendLine();
             sb.AppendLine($"    public void AddCallbacks({inputClass}.I{ToSafeIdentifier(map.name)}Actions instance) => actions.AddCallbacks(instance);");
             sb.AppendLine($"    public void RemoveCallbacks({inputClass}.I{ToSafeIdentifier(map.name)}Actions instance) => actions.RemoveCallbacks(instance);");
@@ -227,6 +256,7 @@ public interface IInputContext
             sb.AppendLine("{");
             sb.AppendLine("    public InputDeviceType CurrentDevice { get; private set; }");
             sb.AppendLine("    public event Action<InputDeviceType> onDeviceChanged;");
+            sb.AppendLine("    public event Action<InputContextType> onContextChanged;");
             sb.AppendLine();
 
             foreach (var map in asset.actionMaps)
@@ -266,8 +296,19 @@ public interface IInputContext
             sb.AppendLine("        if (_activeContext == context) return;");
             sb.AppendLine("        foreach (var ctx in _contexts.Values) ctx.Disable();");
             sb.AppendLine("        _activeContext = context;");
-            sb.AppendLine("        _contexts[context].Enable();");
+            sb.AppendLine("        if (_contexts.TryGetValue(context, out var newCtx))");
+            sb.AppendLine("            newCtx.Enable();");
+            sb.AppendLine("        onContextChanged?.Invoke(_activeContext);");
             sb.AppendLine("    }");
+            sb.AppendLine();
+            
+            sb.AppendLine("public InputAction GetAction(InputActionId actionId)");
+            sb.AppendLine("{");
+            sb.AppendLine("    if (_activeContext == InputContextType.None)");
+            sb.AppendLine("        return null;");
+            sb.AppendLine();
+            sb.AppendLine("    return _contexts[_activeContext].GetAction(actionId);");
+            sb.AppendLine("}");
             sb.AppendLine();
 
             sb.AppendLine("    private void DetectInitialDevice()");
